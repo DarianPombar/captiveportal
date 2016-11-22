@@ -1,0 +1,104 @@
+html,
+body {
+    height: 100%;
+    h1 {
+        color: #0088bf !important;
+        font-weight: 700 !important;
+    }
+    h5 {
+        color: #0d3d6b !important;
+        font-weight: 500 !important;
+        a {
+            color: red;
+        }
+        a:hover {
+            color: green;
+        }
+        a:visited {
+            color: red;
+        }
+    }
+    p {
+        color: #28537b !important;
+    }
+    input[type=text]:focus:not([readonly]) {
+        border-bottom: 1px solid #34ae8b !important;
+        box-shadow: 0 1px 0 0 #34ae8b !important;
+    }
+}
+
+.flexbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#rocket {
+    height: 15rem;
+    width: auto;
+    padding: 2rem;
+}
+
+#astronaut {
+    height: 5rem;
+    width: auto;
+}
+
+#identification {
+    border: 2px solid white;
+    border-radius: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    margin-right: 0.8rem;
+}
+
+@media screen and (max-width: 991px) {
+    .gradient {
+        height: 30vh;
+    }
+}
+
+@media screen and (min-width: 992px) {
+    .container-fluid,
+    .row,
+    .col-lg-6 {
+        height: 100%;
+    }
+    #rocket {
+        height: unset;
+        width: unset;
+        padding: 2rem;
+    }
+}
+
+.material-icons {}
+
+.gradient {
+    background: linear-gradient(#34a8c1, #34ae8b);
+}
+
+.error-gradient {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(#34a8c1, #34ae8b);
+}
+
+.btn {
+    padding: 0.8rem 1rem;
+    border-radius: 0.5rem;
+    box-shadow: unset;
+}
+
+.btn:hover {
+    box-shadow: unset;
+    color: darken(#34ae8b, 25%);
+}
+
+.btn-default-outline {
+    color: #34ae8b;
+    border: 2px solid #34ae8b;
+}
+
+.btn-success-outline {
+    padding: 0.2rem;
+    margin: 0.5rem;
+}

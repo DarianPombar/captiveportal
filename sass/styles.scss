@@ -1,0 +1,85 @@
+/*!
+ * Material Design for Bootstrap 4
+ * Version: MDB PRO 4.1.0
+ *
+ *
+ * Copyright: Material Design for Bootstrap
+ * http://mdbootstrap.com/
+ *
+ * Read the license: http://mdbootstrap.com/license/
+ *
+ * Atribution: Animate CSS, Twitter Bootstrap, Materialize CSS, Normalize CSS, Waves JS, WOW JS, Toastr, Chart.js , Hammer.js
+ *
+ */
+
+@charset "UTF-8";
+
+// MDB Framework //
+
+// Mixins
+@import "styles/data/prefixer";
+@import "styles/data/mixins";
+
+// Variables
+@import "styles/data/colors";
+@import "styles/data/variables-b4";
+@import "styles/data/variables";
+
+//Global
+@import "styles/global";
+
+// MDB Free  
+@import "styles/roboto";
+@import "styles/typography";
+@import "styles/animations";
+@import "styles/waves";
+@import "styles/helpers";
+@import "styles/buttons";
+@import "styles/forms-basic";
+@import "styles/cards-basic";
+@import "styles/navbars";
+@import "styles/hover-effects";
+@import "styles/footer";
+@import "styles/carousels-basic";
+
+// MDB Premium  
+@import "styles/forms-pro";
+@import "styles/tabs";
+@import "styles/msc";
+@import "styles/progress";
+@import "styles/accordion";
+@import "styles/buttons-pro";
+@import "styles/social-buttons";
+@import "styles/cards-pro";
+@import "styles/dropdowns-pro";
+@import "styles/light-box";
+@import "styles/side-nav";
+@import "styles/navbars-pro";
+@import "styles/carousels-pro";
+@import "styles/modals-pro";
+@import "styles/toasts";
+@import "styles/scrollspy";
+@import "styles/charts-pro";
+@import "styles/animations-pro";
+@import "styles/scrollbar";
+@import "styles/ecommerce";
+@import "styles/skins";
+
+// DATE & TIME PICKERS
+@import "styles/date_picker/default.scss";
+@import "styles/date_picker/default.date.scss";
+@import "styles/date_picker/default.time.scss";
+
+// SECTIONS
+@import "styles/sections/blog";
+@import "styles/sections/magazine";
+@import "styles/sections/pricing";
+@import "styles/sections/testimonials";
+@import "styles/sections/features";
+@import "styles/sections/team";
+@import "styles/sections/form-sets";
+@import "styles/sections/templates";
+
+
+// CUSTOM
+@import "styles/custom";
