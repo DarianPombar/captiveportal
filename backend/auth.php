@@ -9,7 +9,11 @@
 require_once("auth.inc");
 
 function authenticate($data){
+
     $response = [];
+
+    require_once("init_vars.php");
+
     if (authenticate_user($data->username, $data->password)) { //si el usuario se puede autentificar
         $response['success'] = true;
         $response['message'] = "Se autentifico correctamente.";

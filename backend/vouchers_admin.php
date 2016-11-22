@@ -34,12 +34,6 @@ function generateNewVoucherPackage($data)
 
     require_once("init_vars.php");
 
-    if (empty($cpzone) || empty($config['captiveportal'][$cpzone])) { //chequear que exista la zona
-        $response['success'] = false;
-        $response['message'] = "Error en con el parametro zone.";
-        return $response;
-    }
-
     if (!is_array($config['captiveportal'])) {
         $config['captiveportal'] = array();
     }

@@ -44,7 +44,6 @@ function init() {
  * @param incoming {Object} El div que entra en el efecto de trasicion
  */
 function transition(outgoing, incoming) {
-    console.log(outgoing);
     outgoing.slideUp("fast", "linear", function () {
         incoming.slideDown("fast", "linear");
     }).attr("hidden");
@@ -127,12 +126,12 @@ function checkIfIsAuthenticated() {
         dataType: 'json',
         success: function (json) {
             if (json.success) {
+                localStorage.setItem("CAPTIVE_PORTAL_SESSION_ID", json.data.sessionId);
                 $("#loading").hide();
                 $("#autenticated").show();
-                window.onbeforeunload = confirmCloseWindow;
-                $("#activation_time").val(json.data.activation_time);
-                $("#time_credit").val(json.data.time_credit);
-                $("#expiry_time").val(json.data.expiry_time);
+                $("#activation_time").val(json.data.activationTime);
+                $("#time_credit").val(json.data.timeCredit);
+                $("#expiry_time").val(json.data.expiryTime);
                 window.onbeforeunload = confirmCloseWindow;
             } else {
                 $("#loading").hide();
@@ -187,14 +186,15 @@ function sendVoucherToServer() {
                     // $("#activateInternet").hide();
                     // $("#autenticated").show();
                     // $("#sessionid").val(json.data.session_id);
-                    localStorage.setItem("CAPTIVE_PORTAL_ZONE", json.data.zone);
-                    localStorage.setItem("CAPTIVE_PORTAL_SESSION_ID", json.data.session_id);
-                    $("#activation_time").val(json.data.activation_time);
-                    $("#time_credit").val(json.data.time_credit);
-                    $("#expiry_time").val(json.data.expiry_time);
+                    // localStorage.setItem("CAPTIVE_PORTAL_ZONE", json.data.zone);
+                    localStorage.setItem("CAPTIVE_PORTAL_SESSION_ID", json.data.sessionId);
+
+                    $("#activation_time").val(json.data.activationTime);
+                    $("#time_credit").val(json.data.timeCredit);
+                    $("#expiry_time").val(json.data.expiryTime);
                     window.onbeforeunload = confirmCloseWindow;
-                    if (json.data.redirurl != null && json.data.redirurl != '') {
-                        window.open(json.data.redirurl, "_blank");
+                    if (json.data.redirUrl != null && json.data.redirUrl != '') {
+                        window.open(json.data.redirUrl, "_blank");
                     }
                 } else {
                     alert(json.message);
@@ -222,7 +222,7 @@ function disconnect() {
         var request = {
             action: 'disconnectClient',
             data: {
-                sessionId: sessionid
+                sessionId: sessionId
             }
         };
         $.ajax({
