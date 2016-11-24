@@ -4,13 +4,50 @@
  * Este fichero es para inicializar toda la configuración en varibales para utilizarlas desde otros ficheros
  */
 
-global $config, $g, $cpzone, $cpzoneid;
+global $config, $g, $cpzone, $cpzoneid, $passthrumac;
 
-$cpzone = "wireless";
+$clientip = $_SERVER['REMOTE_ADDR'];
+
+if (!$clientip) { //si no existe una direccion ip del cliente
+    log_error("Zone: {$cpzone} - Captive portal could not determine client's IP address.");
+    $response['success'] = false;
+    $response['message'] = "No puede determinar la direccion ip del cliente.";
+    return $response;
+}
+
+
+$captivePortals = $config['captiveportal'];
+if (count($captivePortals) == 0) {
+    $response['success'] = false;
+    $response['message'] = "No existe ningun portal cautivo en la configuracion.";
+    return $response;
+}
+
+//$cpzone = "wireless";
+$cpzone = "";
+
+foreach ($captivePortals as $key1 => $captivePortal) {
+    $cpInterface = $captivePortal['interface'];
+    $interfaces = $config['interfaces'];
+    $finder = false;
+    foreach ($interfaces as $key2 => $interface) {
+        if($cpInterface == $key2){
+            $subnet = get_interface_ip($key2)."/".get_interface_subnet($key2);
+            if(ip_in_subnet($clientip, $subnet)){
+                $cpzone = $key1;
+                $finder = true;
+                break;
+            }
+        }
+    }
+    if($finder){
+        break;
+    }
+}
 
 if (empty($cpzone) || empty($config['captiveportal'][$cpzone])) { //chequear que exista la zona
     $response['success'] = false;
-    $response['message'] = "Error en con el parametro zone.";
+    $response['message'] = "La zona no existe en la configuracion.";
     return $response;
 }
 
@@ -29,15 +66,6 @@ $orig_host = $_SERVER['HTTP_HOST'];
 ///* NOTE: IE 8/9 is buggy and that is why this is needed */
 $orig_request = trim($_REQUEST['redirurl'], " /");
 
-$clientip = $_SERVER['REMOTE_ADDR'];
-
-if (!$clientip) { //si no existe una direccion ip del cliente
-    log_error("Zone: {$cpzone} - Captive portal could not determine client's IP address.");
-    $response['success'] = false;
-    $response['message'] = "No puede determinar la direccion ip del cliente.";
-    return $response;
-}
-
 if (!empty($cpcfg['redirurl'])) {
     $redirurl = $cpcfg['redirurl'];
 } else if (preg_match("/redirurl=(.*)/", $orig_request, $matches)) {
@@ -48,6 +76,8 @@ if (!empty($cpcfg['redirurl'])) {
 
 $macfilter = !isset($cpcfg['nomacfilter']);
 $passthrumac = isset($cpcfg['passthrumacadd']);
+
+//die(var_dump($passthrumac));
 
 ///* find MAC address for client */
 if ($macfilter || $passthrumac) {
