@@ -65,7 +65,7 @@ function checkVoucherForTraffic($data){
 
     require_once("init_vars.php");
 
-    if(isset($data->voucher)) {
+    if(isset($data->voucher) and !empty($data->voucher)) {
         $voucher = trim($data->voucher);
 
         $timecredit = voucher_auth($voucher);

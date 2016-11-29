@@ -39,6 +39,9 @@ if(isAjax()){ // si es una petición web de tipo ajax
             case "authenticate":
                 $response = authenticate($request->data);
                 break;
+            case "verifyVoucher":
+                $response = verifyVoucher($request->data);
+                break;
             case "getVoucherPackagesData":
                 $response = getVoucherPackagesData();
                 break;

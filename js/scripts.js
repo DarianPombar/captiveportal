@@ -522,3 +522,37 @@ function getKeyPar(){
         }
     });
 }
+
+function verifyVoucher(){
+    var voucher = $('#auth_voucher').val();
+    if(voucher == ''){
+        alert("introduce un voucher");
+    }else {
+        var request = {
+            action: 'verifyVoucher',
+            data: {
+                voucher: voucher
+            }
+        };
+        $.ajax({
+            url: 'backend/helper.php',
+            data: {
+                request: JSON.stringify(request)
+            },
+            type: 'post',
+            dataType: 'json',
+            success: function (json) {
+                if (json.success) {
+                    // $('#publickey').val(json.data.public.replace(/\\n/g, '\n'));
+                    // $('#privatekey').val(json.data.private.replace(/\\n/g, '\n'));
+                    alert(json.message);
+                } else {
+                    alert(json.message);
+                }
+            },
+            error: function (xhr, status) {
+                alert('Disculpe, existio un problema');
+            }
+        });
+    }
+}

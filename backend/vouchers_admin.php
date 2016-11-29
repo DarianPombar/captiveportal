@@ -7,11 +7,61 @@
  * Este fichero es para generar nuevos vouchers en el sistema
  */
 
+
+/**
+ * Verifica un voucher y chequea si este tiene tiempo disponible, o sea di es valido, en caso de serlo cuanto tiempo le queda y si esta actualmente en uso
+ * @param $data
+ * @return array
+ */
+function verifyVoucher($data)
+{
+
+    $response = [];
+
+    require_once("init_vars.php");
+
+    if (isset($data->voucher) and !empty($data->voucher)) {
+        $voucher = trim($data->voucher);
+
+        $result = voucher_auth($voucher, true);
+
+        if (strpos($result[0], "already used and expired") !== false) {
+            $response['success'] = false;
+            $response['message'] = "Voucher expirado";
+        } else if (strpos($result[0], "invalid:") !== false) {
+            $response['success'] = false;
+            $response['message'] = "Voucher invalido";
+        } else if (strpos($result[0], "active and good for") !== false) {
+            $timeCredit = (int)explode(" ", $result[1])[3];
+            $response['success'] = true;
+            $response['message'] = "Voucher valido, activo y con tiempo disponible";
+            $data = [];
+            $data['timeCredit'] = $timeCredit;
+            $data['inUse'] = true;
+            $response['data'] = $data;
+        } else if (strpos($result[0], "good for") !== false) {
+            $timeCredit = (int)explode(" ", $result[1])[3];
+            $response['success'] = true;
+            $response['message'] = "Voucher valido, no activo y con tiempo disponible";
+            $data = [];
+            $data['timeCredit'] = $timeCredit;
+            $data['inUse'] = false;
+            $response['data'] = $data;
+        }
+    } else {
+        $response['success'] = false;
+        $response['message'] = "Error, Problema con el parametro voucher";
+    }
+
+    return $response;
+}
+
 /**
  * Devuelve los datos de todos los paquetes de vouchers
  * @return array
  */
-function getVoucherPackagesData(){
+function getVoucherPackagesData()
+{
 
     $response = [];
 
@@ -20,7 +70,7 @@ function getVoucherPackagesData(){
     $a_roll = &$config['voucher'][$cpzone]['roll'];
 
     $responseData = [];
-    foreach($a_roll as $rollent){
+    foreach ($a_roll as $rollent) {
         $responseData[] = $rollent;
     }
 
@@ -210,7 +260,8 @@ function generateNewVoucherPackage($data)
  * Genera nuevas llaves para la generacion de paquetes de vouchers
  * @return array
  */
-function generateKeyPar(){
+function generateKeyPar()
+{
 
     $response = [];
 
@@ -245,16 +296,17 @@ function generateKeyPar(){
  * @param $data
  * @return array
  */
-function saveKeyPar($data){
+function saveKeyPar($data)
+{
 
     $response = [];
 
     require_once("init_vars.php");
 
-    if(empty($data->privateKey) and empty($data->publicKey)){
+    if (empty($data->privateKey) and empty($data->publicKey)) {
         $response['success'] = false;
         $response['message'] = "Error, Las llaves proporcionadas tienen problemas.";
-    }else{
+    } else {
         $config['voucher'][$cpzone]['publickey'] = base64_encode($data->publicKey);
         $config['voucher'][$cpzone]['privatekey'] = base64_encode($data->privateKey);
         write_config();
@@ -270,7 +322,8 @@ function saveKeyPar($data){
  * Devuelva las llaves actuales que se estan usando en la generacion de vouchers
  * @return array
  */
-function getKeyPar(){
+function getKeyPar()
+{
 
     $response = [];
 
@@ -278,10 +331,10 @@ function getKeyPar(){
 
     $privateKey = base64_decode($config['voucher'][$cpzone]['privatekey']);
     $publicKey = base64_decode($config['voucher'][$cpzone]['publickey']);
-    if(empty($privateKey) or empty($publicKey)) {
+    if (empty($privateKey) or empty($publicKey)) {
         $response['success'] = false;
         $response['message'] = "Error, no existen llaves para esta zona.";
-    }else{
+    } else {
         $data = [];
         $data['privateKey'] = $privateKey;
         $data['publicKey'] = $publicKey;
