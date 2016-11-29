@@ -435,9 +435,71 @@ function getVoucherPackagesData(){
 /**
  * Envia al servidor una peticion ajax para generar nuevas llaves para generar vouchers
  */
-function generateNewVoucherKeys() {
+function generateKeyPar() {
     var request = {
-        action: 'generateNewVoucherKeys'
+        action: 'generateKeyPar'
+    };
+    $.ajax({
+        url: 'backend/helper.php',
+        data: {
+            request: JSON.stringify(request)
+        },
+        type: 'post',
+        dataType: 'json',
+        success: function (json) {
+            if (json.success) {
+                // $('#publickey').val(json.data.public.replace(/\\n/g, '\n'));
+                // $('#privatekey').val(json.data.private.replace(/\\n/g, '\n'));
+                alert(json.message);
+            } else {
+                alert(json.message);
+            }
+        },
+        error: function (xhr, status) {
+            alert('Disculpe, existio un problema');
+        }
+    });
+}
+
+/**
+ * Envia al servidor una peticion ajax con las llaves nuevas para generar vouchers
+ */
+function saveKeyPar() {
+    var request = {
+        action: 'saveKeyPar',
+        data:{
+            privateKey: "llave privada",
+            publicKey: "llave publica"
+        }
+    };
+    $.ajax({
+        url: 'backend/helper.php',
+        data: {
+            request: JSON.stringify(request)
+        },
+        type: 'post',
+        dataType: 'json',
+        success: function (json) {
+            if (json.success) {
+                // $('#publickey').val(json.data.public.replace(/\\n/g, '\n'));
+                // $('#privatekey').val(json.data.private.replace(/\\n/g, '\n'));
+                alert(json.message);
+            } else {
+                alert(json.message);
+            }
+        },
+        error: function (xhr, status) {
+            alert('Disculpe, existio un problema');
+        }
+    });
+}
+
+/**
+ * Envia al servidor una peticion ajax para saber cuales son las llaves que se usan actualmente en la generacion de vouchers
+ */
+function getKeyPar(){
+    var request = {
+        action: 'getKeyPar'
     };
     $.ajax({
         url: 'backend/helper.php',

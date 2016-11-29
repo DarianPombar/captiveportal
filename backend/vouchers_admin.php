@@ -210,7 +210,7 @@ function generateNewVoucherPackage($data)
  * Genera nuevas llaves para la generacion de paquetes de vouchers
  * @return array
  */
-function generateNewVoucherKeys(){
+function generateKeyPar(){
 
     $response = [];
 
@@ -237,5 +237,58 @@ function generateNewVoucherKeys(){
     $response['success'] = true;
     $response['data'] = $data;
     $response['message'] = "Se han creado nuevas llaves satisfactoriamente.";
+    return $response;
+}
+
+/**
+ * Guarda las llaves dadas para la generacion de paquetes de vouchers
+ * @param $data
+ * @return array
+ */
+function saveKeyPar($data){
+
+    $response = [];
+
+    require_once("init_vars.php");
+
+    if(empty($data->privateKey) and empty($data->publicKey)){
+        $response['success'] = false;
+        $response['message'] = "Error, Las llaves proporcionadas tienen problemas.";
+    }else{
+        $config['voucher'][$cpzone]['publickey'] = base64_encode($data->publicKey);
+        $config['voucher'][$cpzone]['privatekey'] = base64_encode($data->privateKey);
+        write_config();
+        voucher_configure_zone(true);
+        $response['success'] = true;
+        $response['message'] = "Se han guardado las llaves nuevas satisfactoriamente.";
+    }
+
+    return $response;
+}
+
+/**
+ * Devuelva las llaves actuales que se estan usando en la generacion de vouchers
+ * @return array
+ */
+function getKeyPar(){
+
+    $response = [];
+
+    require_once("init_vars.php");
+
+    $privateKey = base64_decode($config['voucher'][$cpzone]['privatekey']);
+    $publicKey = base64_decode($config['voucher'][$cpzone]['publickey']);
+    if(empty($privateKey) or empty($publicKey)) {
+        $response['success'] = false;
+        $response['message'] = "Error, no existen llaves para esta zona.";
+    }else{
+        $data = [];
+        $data['privateKey'] = $privateKey;
+        $data['publicKey'] = $publicKey;
+        $response['success'] = true;
+        $response['data'] = $data;
+        $response['message'] = "Mostrando las llaves actuales.";
+    }
+
     return $response;
 }
