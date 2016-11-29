@@ -7,7 +7,11 @@
  * Este fichero es para generar nuevos vouchers en el sistema
  */
 
-function getVoucherPackageData(){
+/**
+ * Devuelve los datos de todos los paquetes de vouchers
+ * @return array
+ */
+function getVoucherPackagesData(){
 
     $response = [];
 
@@ -27,6 +31,11 @@ function getVoucherPackageData(){
     return $response;
 }
 
+/**
+ * Genera un nuevo paquete de vouchers dependiendo de los valores que se le pasen en el objeto data
+ * @param $data
+ * @return array
+ */
 function generateNewVoucherPackage($data)
 {
 
@@ -195,4 +204,38 @@ function generateNewVoucherPackage($data)
     }
 
     return $response; //devolver el array de la respuesta en formato json
+}
+
+/**
+ * Genera nuevas llaves para la generacion de paquetes de vouchers
+ * @return array
+ */
+function generateNewVoucherKeys(){
+
+    $response = [];
+
+    require_once("init_vars.php");
+
+//    die(var_dump($config['voucher'][$cpzone]));
+
+    exec("/usr/bin/openssl genrsa 64 > /tmp/key64.private");
+    exec("/usr/bin/openssl rsa -pubout < /tmp/key64.private > /tmp/key64.public");
+//    $privateKey = str_replace("\n", "\\n", file_get_contents("/tmp/key64.private"));
+    $privateKey = file_get_contents("/tmp/key64.private");
+//    die(var_dump($privateKey));
+//    $publicKey = str_replace("\n", "\\n", file_get_contents("/tmp/key64.public"));
+    $publicKey = file_get_contents("/tmp/key64.public");
+    exec("rm /tmp/key64.private /tmp/key64.public");
+    $config['voucher'][$cpzone]['publickey'] = base64_encode($publicKey);
+    $config['voucher'][$cpzone]['privatekey'] = base64_encode($privateKey);
+    write_config();
+    voucher_configure_zone(true);
+//    print json_encode(['public' => $publickey, 'private' => $privatekey]);
+    $data = array();
+    $data["public"] = $publicKey;
+    $data["private"] = $privateKey;
+    $response['success'] = true;
+    $response['data'] = $data;
+    $response['message'] = "Se han creado nuevas llaves satisfactoriamente.";
+    return $response;
 }

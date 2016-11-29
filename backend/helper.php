@@ -39,11 +39,14 @@ if(isAjax()){ // si es una petición web de tipo ajax
             case "authenticate":
                 $response = authenticate($request->data);
                 break;
-            case "getVoucherPackageData":
-                $response = getVoucherPackageData();
+            case "getVoucherPackagesData":
+                $response = getVoucherPackagesData();
                 break;
             case "generateNewVoucherPackage":
                 $response = generateNewVoucherPackage($request->data);
+                break;
+            case "generateNewVoucherKeys":
+                $response = generateNewVoucherKeys();
                 break;
         }
 	}else{

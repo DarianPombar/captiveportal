@@ -83,7 +83,7 @@ function getParameterInURLByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
-function initcheck(){
+function initcheck() {
 
     var request = {
         action: "initCheck"
@@ -165,7 +165,7 @@ function sendVoucherToServer() {
         // var redirectUrl = getParameterInURLByName('redirurl');
         var request = {
             action: 'checkVoucherForTraffic',
-            data:{
+            data: {
                 voucher: voucher
             }
         };
@@ -305,7 +305,7 @@ function generateVouchersAutentication() {
 }
 
 /**
- * Envia al servidor los 4 parametros de generacion de vouchers mediante una peticion ajax
+ * Envia al servidor los 4 parametros de generacion de vouchers para generar un paquete de vouchers mediante una peticion ajax
  */
 function generateNewVouchers() {
     var roll = $('#roll').val();
@@ -319,7 +319,7 @@ function generateNewVouchers() {
         // }
         var request = {
             action: 'generateNewVoucherPackage',
-            data:{
+            data: {
                 roll: roll,
                 minutes: minutes,
                 count: count,
@@ -394,13 +394,69 @@ function generateVouchersModalHide() {
  */
 function formGenerateVouchers(e) {
     e.preventDefault();
-    if($('#btnGenerateNewVouchersAuthenticated').is(":visible")){
-        if($("#formGenerateVouchers").validationEngine("validate")){
+    if ($('#btnGenerateNewVouchersAuthenticated').is(":visible")) {
+        if ($("#formGenerateVouchers").validationEngine("validate")) {
             generateVouchersAutentication();
         }
-    }else{
-        if($("#formGenerateVouchers").validationEngine("validate")){
+    } else {
+        if ($("#formGenerateVouchers").validationEngine("validate")) {
             generateNewVouchers();
         }
     }
+}
+
+/**
+ * Envia al servidor una peticion ajax para obtener los datos de los paquetes de vouchers
+ */
+function getVoucherPackagesData(){
+    var request = {
+        action: 'getVoucherPackagesData'
+    };
+    $.ajax({
+        url: 'backend/helper.php',
+        data: {
+            request: JSON.stringify(request)
+        },
+        type: 'post',
+        dataType: 'json',
+        success: function (json) {
+            if (json.success) {
+                alert(json.message);
+            } else {
+                alert(json.message);
+            }
+        },
+        error: function (xhr, status) {
+            alert('Disculpe, existio un problema');
+        }
+    });
+}
+
+/**
+ * Envia al servidor una peticion ajax para generar nuevas llaves para generar vouchers
+ */
+function generateNewVoucherKeys() {
+    var request = {
+        action: 'generateNewVoucherKeys'
+    };
+    $.ajax({
+        url: 'backend/helper.php',
+        data: {
+            request: JSON.stringify(request)
+        },
+        type: 'post',
+        dataType: 'json',
+        success: function (json) {
+            if (json.success) {
+                // $('#publickey').val(json.data.public.replace(/\\n/g, '\n'));
+                // $('#privatekey').val(json.data.private.replace(/\\n/g, '\n'));
+                alert(json.message);
+            } else {
+                alert(json.message);
+            }
+        },
+        error: function (xhr, status) {
+            alert('Disculpe, existio un problema');
+        }
+    });
 }
