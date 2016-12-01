@@ -314,7 +314,7 @@ EOD;
 	portal_allow($clientip, $clientmac, "unauthenticated");
 
 } else {
-    echo "entro al 9vo if";
+//    echo "entro al 9vo if";
 	/* display captive portal page */
 	portal_reply_page($redirurl, "login", null, $clientmac, $clientip);
 }

@@ -34,7 +34,11 @@ function checkIfIsLogged(){
     if(!empty($cpsession)){
         $responsedata = array();
         $voucher = $cpsession['username'];
-        $timecredit = voucher_auth($voucher);
+        $timecredit = 0;
+        $result = voucher_auth($voucher,true);
+        if (strpos($result[0], "good for") !== false) {
+            $timecredit = (int)explode(" ", $result[1])[3];
+        }
         $responsedata['timeCredit'] = $timecredit;
 //        $totalTimeOfVoucher = $cpsession['session_timeout'] / 60;
 //        $consumedVoucherTime = $totalTimeOfVoucher - $timecredit;
@@ -95,11 +99,11 @@ function checkVoucherForTraffic($data){
             } else if($sessionid == 0){
                 captiveportal_logportalauth($voucher, $clientmac, $clientip, "FAILURE", "voucher expired");
                 $response['success'] = false;
-                $response['message'] = "Voucher expirado.";
+                $response['message'] = "Tiket expirado.";
             } else if($sessionid == -1){
                 $response['success'] = false;
 //                $response['message'] = "Username: {$username} is already authenticated using another MAC address.";
-                $response['message'] = "El voucher ".$voucher." esta siendo usado desde otra computadora";
+                $response['message'] = "El tiket ".$voucher." esta siendo usado desde otra computadora";
             } else if($sessionid == -2){
                 $response['success'] = false;
 //                $response['message'] = "System reached maximum login capacity";
@@ -108,11 +112,11 @@ function checkVoucherForTraffic($data){
         } else if ($timecredit == -1) {
             captiveportal_logportalauth($voucher, $clientmac, $clientip, "FAILURE", "voucher expired");
             $response['success'] = false;
-            $response['message'] = "Voucher expirado.";
+            $response['message'] = "Tiket expirado.";
         } else {
             captiveportal_logportalauth($voucher, $clientmac, $clientip, "FAILURE");
             $response['success'] = false;
-            $response['message'] = "Voucher invalido.";
+            $response['message'] = "Tiket invalido.";
             $response['voucher'] = $voucher;
         }
     }else{
@@ -139,7 +143,7 @@ function disconnectClient($data){
     if($sessionId != "") {
         captiveportal_disconnect_client($sessionId);
         $response['success'] = true;
-        $response['message'] = "Se ha desconectado satisfactoriamente.";
+        $response['message'] = "Se ha desconectado satisfactoriamente. Gracias por utilizar el servicio y esperamos que vuelva pronto.";
     }else{
         $response['success'] = false;
         $response['message'] = "Problemas con el parametro sessionId.";

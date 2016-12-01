@@ -11,6 +11,9 @@
  */
 
 
+/** Variables globales */
+var timerId = null;
+
 /** Llama a la funcion init cuando la pagina web este lista */
 $(document).ready(init);
 
@@ -19,17 +22,19 @@ $(document).ready(init);
  */
 function init() {
     //set onclick events to buttons
-    $("#btnActivate").on("click", activate);
-    $("#btnBack").on("click", back);
-    $("#btnAuthenticate").on("click", sendVoucherToServer);
+    // $("#btnActivate").on("click", activate);
+    $("#btnActivate").on("click", sendVoucherToServer);
+    $("#btnCheckVoucher").on("click", verifyVoucher);
+    // $("#btnBack").on("click", back);
+    // $("#btnAuthenticate").on("click", sendVoucherToServer);
     $("#btnDisconnect").on("click", disconnect);
     // $("#btnGenerateNewVouchersAuthenticated").on('click', generateVouchersAutentication);
     // $("#btnGenerateNewVouchers").on('click', generateNewVouchers);
-    $("#generateVouchersModal").on("show.bs.modal", generateVouchersModalShow);
-    $("#generateVouchersModal").on("shown.bs.modal", generateVouchersModalShown);
-    $("#generateVouchersModal").on("hidden.bs.modal", generateVouchersModalHide);
+    // $("#generateVouchersModal").on("show.bs.modal", generateVouchersModalShow);
+    // $("#generateVouchersModal").on("shown.bs.modal", generateVouchersModalShown);
+    // $("#generateVouchersModal").on("hidden.bs.modal", generateVouchersModalHide);
 
-    $("#formGenerateVouchers").on("submit", formGenerateVouchers);
+    // $("#formGenerateVouchers").on("submit", formGenerateVouchers);
     $("#formGenerateVouchers").validationEngine("");
 
     //check if this client is authenticated
@@ -130,8 +135,9 @@ function checkIfIsAuthenticated() {
                 $("#loading").hide();
                 $("#autenticated").show();
                 $("#activation_time").val(json.data.activationTime);
-                $("#time_credit").val(json.data.timeCredit);
+                $("#time_credit").val(json.data.timeCredit+ ":00");
                 $("#expiry_time").val(json.data.expiryTime);
+                timerId = window.setInterval(downTimer, 1000);
                 window.onbeforeunload = confirmCloseWindow;
             } else {
                 $("#loading").hide();
@@ -159,29 +165,29 @@ function back() {
 function sendVoucherToServer() {
     var voucher = $('#auth_voucher').val();
     if (voucher == '') {
-        alert("Debe introducir un voucher");
+        alert("Tiene que introducir un tike");
     } else {
         // var zone = getParameterInURLByName('zone');
-        // var redirectUrl = getParameterInURLByName('redirurl');
+        var redirectUrl = getParameterInURLByName('redirurl');
         var request = {
             action: 'checkVoucherForTraffic',
             data: {
-                voucher: voucher
+                voucher: voucher,
             }
         };
         $.ajax({
             url: 'backend/helper.php',
             data: {
-                request: JSON.stringify(request)
+                request: JSON.stringify(request),
+                redirurl: redirectUrl //solo para esta version, depues borrar
                 // zone: zone,
-                // redirurl: redirectUrl,
                 // voucher: voucher
             },
             type: 'POST',
             dataType: 'json',
             success: function (json) {
                 if (json.success) {
-                    transition($("#activateInternet"), $("#autenticated"));
+                    transition($("#connected"), $("#autenticated"));
                     // $("#activateInternet").html($("#autenticated").html());
                     // $("#activateInternet").hide();
                     // $("#autenticated").show();
@@ -189,9 +195,11 @@ function sendVoucherToServer() {
                     // localStorage.setItem("CAPTIVE_PORTAL_ZONE", json.data.zone);
                     localStorage.setItem("CAPTIVE_PORTAL_SESSION_ID", json.data.sessionId);
 
+                    $("#auth_voucher").val("");
                     $("#activation_time").val(json.data.activationTime);
-                    $("#time_credit").val(json.data.timeCredit);
+                    $("#time_credit").val(json.data.timeCredit + ":00");
                     $("#expiry_time").val(json.data.expiryTime);
+                    timerId = window.setInterval(downTimer, 1000);
                     window.onbeforeunload = confirmCloseWindow;
                     if (json.data.redirUrl != null && json.data.redirUrl != '') {
                         window.open(json.data.redirUrl, "_blank");
@@ -206,6 +214,41 @@ function sendVoucherToServer() {
             // complete: function(xhr, status){
             // alert('Peticion realizada');
             // }
+        });
+    }
+}
+
+
+function verifyVoucher() {
+    var voucher = $('#auth_voucher').val();
+    if (voucher == '') {
+        alert("Tiene que introducir un tike");
+    } else {
+        var request = {
+            action: 'verifyVoucher',
+            data: {
+                voucher: voucher
+            }
+        };
+        $.ajax({
+            url: 'backend/helper.php',
+            data: {
+                request: JSON.stringify(request)
+            },
+            type: 'post',
+            dataType: 'json',
+            success: function (json) {
+                if (json.success) {
+                    // $('#publickey').val(json.data.public.replace(/\\n/g, '\n'));
+                    // $('#privatekey').val(json.data.private.replace(/\\n/g, '\n'));
+                    alert("El tiempo disponible que le queda es de: " + json.data.timeCredit + " minutos.");
+                } else {
+                    alert(json.message);
+                }
+            },
+            error: function (xhr, status) {
+                alert('Disculpe, existio un problema');
+            }
         });
     }
 }
@@ -237,9 +280,10 @@ function disconnect() {
                     // $("#activateInternet").html($("#connected").html());
                     // $("#autenticated").hide();
                     // $("#connected").show();
+                    window.clearInterval(timerId);
                     transition($("#autenticated"), $("#connected"));
                     window.onbeforeunload = null;
-                    // alert(json.message);
+                    alert(json.message);
                     // localStorage.removeItem("CAPTIVE_PORTAL_ZONE");
                     // localStorage.removeItem("CAPTIVE_PORTAL_SESSION_ID");
                 } else {
@@ -254,6 +298,36 @@ function disconnect() {
             // }
         });
     }
+}
+
+function downTimer() {
+    var timeCredit = $("#time_credit").val().split(":");
+
+    var seconds = parseInt(timeCredit[1]);
+    var minutes = parseInt(timeCredit[0]);
+
+    if ((minutes == 0) && (seconds == 0)) {
+
+        window.clearInterval(timerId);
+        transition($("#autenticated"), $("#connected"));
+        window.onbeforeunload = null;
+        alert("Se le ha acabado el tiempo. Gracias por utilizar el servicio y esperamos que vuelva pronto.");
+    }else{
+        seconds--;
+
+        if (seconds == -1) {
+            seconds = 59;
+            minutes--;
+        }
+
+        if (seconds > 9) {
+            $("#time_credit").val(minutes + ":" + seconds);
+        } else {
+            $("#time_credit").val(minutes + ":0" + seconds);
+        }
+    }
+
+
 }
 
 /**
@@ -408,7 +482,7 @@ function formGenerateVouchers(e) {
 /**
  * Envia al servidor una peticion ajax para obtener los datos de los paquetes de vouchers
  */
-function getVoucherPackagesData(){
+function getVoucherPackagesData() {
     var request = {
         action: 'getVoucherPackagesData'
     };
@@ -467,7 +541,7 @@ function generateKeyPar() {
 function saveKeyPar() {
     var request = {
         action: 'saveKeyPar',
-        data:{
+        data: {
             privateKey: "llave privada",
             publicKey: "llave publica"
         }
@@ -497,7 +571,7 @@ function saveKeyPar() {
 /**
  * Envia al servidor una peticion ajax para saber cuales son las llaves que se usan actualmente en la generacion de vouchers
  */
-function getKeyPar(){
+function getKeyPar() {
     var request = {
         action: 'getKeyPar'
     };
@@ -521,38 +595,4 @@ function getKeyPar(){
             alert('Disculpe, existio un problema');
         }
     });
-}
-
-function verifyVoucher(){
-    var voucher = $('#auth_voucher').val();
-    if(voucher == ''){
-        alert("introduce un voucher");
-    }else {
-        var request = {
-            action: 'verifyVoucher',
-            data: {
-                voucher: voucher
-            }
-        };
-        $.ajax({
-            url: 'backend/helper.php',
-            data: {
-                request: JSON.stringify(request)
-            },
-            type: 'post',
-            dataType: 'json',
-            success: function (json) {
-                if (json.success) {
-                    // $('#publickey').val(json.data.public.replace(/\\n/g, '\n'));
-                    // $('#privatekey').val(json.data.private.replace(/\\n/g, '\n'));
-                    alert(json.message);
-                } else {
-                    alert(json.message);
-                }
-            },
-            error: function (xhr, status) {
-                alert('Disculpe, existio un problema');
-            }
-        });
-    }
 }
