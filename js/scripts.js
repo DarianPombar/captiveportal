@@ -21,6 +21,8 @@ $(document).ready(init);
  * Pone los eventos onclick de los botones y chequea si ya fue autentificado
  */
 function init() {
+
+    checkNotificationSystemAccess(); //for system notification
     //set onclick events to buttons
     // $("#btnActivate").on("click", activate);
     $("#btnActivate").on("click", sendVoucherToServer);
@@ -42,6 +44,30 @@ function init() {
     initcheck();
     // checkIfIsAuthenticated();
 }
+
+function checkNotificationSystemAccess() {
+
+    if("Notification" in window){
+        if((Notification.permission === "default") || (Notification.permission === "denied")){
+            toastr.warning("No tiene las notificaciones de sistema activadas para este sistema, es de vital importancia que las active para " +
+                "que se le notifique a traves del sistema operativo las informaciones.", "Información");
+            window.setTimeout(requestSystemNotificationPermission, 5000);
+        }
+    }
+
+}
+
+
+function requestSystemNotificationPermission(){
+    Notification.requestPermission(checkNotificationAccessByUserAction)
+}
+
+function checkNotificationAccessByUserAction(status) {
+    if (status == "denied") {
+        toastr.warning("No se mostrar las notificaciones del sistema, por lo tanto esta funcionalidad estara desabilitada hasta que la habilite manualmente.", "Información");
+    }
+}
+
 
 /**
  * Efecto de transicion de dos div
@@ -88,6 +114,12 @@ function getParameterInURLByName(name) {
     return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
 }
 
+function getAbsolutePath(){
+    var loc = window.location;
+    var pathName = loc.pathname.substring(0, loc.pathname.lastIndexOf('/')+1);
+    return loc.href.substring(0, loc.href.length - ((loc.pathname + loc.search+loc.hash).length - pathName.length));
+}
+
 function initcheck() {
 
     var request = {
@@ -105,11 +137,11 @@ function initcheck() {
             if (json.success) {
                 checkIfIsAuthenticated();
             } else {
-                alert(json.message);
+                toastr.error(json.message,"Información");
             }
         },
         error: function (xhr, status) {
-            alert('Disculpe, existio un problema');
+            toastr.error('Disculpe, existio un problema', "Error de conexión");
         }
     });
 }
@@ -146,7 +178,7 @@ function checkIfIsAuthenticated() {
             }
         },
         error: function (xhr, status) {
-            alert('Disculpe, existio un problema');
+            toastr.error('Disculpe, existio un problema', "Error de conexión");
         }
     });
 }
@@ -165,7 +197,7 @@ function back() {
 function sendVoucherToServer() {
     var voucher = $('#auth_voucher').val();
     if (voucher == '') {
-        alert("Tiene que introducir un tike");
+        toastr.error("Tiene que introducir un tike.", "Error de autentificación");
     } else {
         // var zone = getParameterInURLByName('zone');
         var redirectUrl = getParameterInURLByName('redirurl');
@@ -205,11 +237,11 @@ function sendVoucherToServer() {
                         window.open(json.data.redirUrl, "_blank");
                     }
                 } else {
-                    alert(json.message);
+                    toastr.error(json.message, "Error de autentificación");
                 }
             },
             error: function (xhr, status) {
-                alert('Disculpe, existio un problema');
+                toastr.error('Disculpe, existio un problema', "Error de conexión");
             }
             // complete: function(xhr, status){
             // alert('Peticion realizada');
@@ -222,7 +254,7 @@ function sendVoucherToServer() {
 function verifyVoucher() {
     var voucher = $('#auth_voucher').val();
     if (voucher == '') {
-        alert("Tiene que introducir un tike");
+        toastr.error("Tiene que introducir un tike.","Error de autentificación");
     } else {
         var request = {
             action: 'verifyVoucher',
@@ -241,13 +273,13 @@ function verifyVoucher() {
                 if (json.success) {
                     // $('#publickey').val(json.data.public.replace(/\\n/g, '\n'));
                     // $('#privatekey').val(json.data.private.replace(/\\n/g, '\n'));
-                    alert("El tiempo disponible que le queda es de: " + json.data.timeCredit + " minutos.");
+                    toastr.success("El tiempo disponible que le queda es de: " + json.data.timeCredit + " minutos.", "Información");
                 } else {
-                    alert(json.message);
+                    toastr.error(json.message, "Información");
                 }
             },
             error: function (xhr, status) {
-                alert('Disculpe, existio un problema');
+                toastr.error('Disculpe, existio un problema.', "Error de conexión");
             }
         });
     }
@@ -260,7 +292,7 @@ function disconnect() {
     // var zone = localStorage.getItem("CAPTIVE_PORTAL_ZONE");
     var sessionId = localStorage.getItem("CAPTIVE_PORTAL_SESSION_ID");
     if (sessionId == '') {
-        alert("Error");
+        toastr.error("Error");
     } else {
         var request = {
             action: 'disconnectClient',
@@ -283,15 +315,15 @@ function disconnect() {
                     window.clearInterval(timerId);
                     transition($("#autenticated"), $("#connected"));
                     window.onbeforeunload = null;
-                    alert(json.message);
+                    toastr.success(json.message);
                     // localStorage.removeItem("CAPTIVE_PORTAL_ZONE");
                     // localStorage.removeItem("CAPTIVE_PORTAL_SESSION_ID");
                 } else {
-                    alert(json.message);
+                    toastr.error(json.message, "Error de desconexión");
                 }
             },
             error: function (xhr, status) {
-                alert('Disculpe, existio un problema');
+                toastr.error('Disculpe, existio un problema.', "Error de conexión");
             }
             // complete: function(xhr, status){
             // alert('Peticion realizada');
@@ -307,11 +339,24 @@ function downTimer() {
     var minutes = parseInt(timeCredit[0]);
 
     if ((minutes == 0) && (seconds == 0)) {
-
         window.clearInterval(timerId);
         transition($("#autenticated"), $("#connected"));
         window.onbeforeunload = null;
-        alert("Se le ha acabado el tiempo. Gracias por utilizar el servicio y esperamos que vuelva pronto.");
+        if(document.visibilityState == "visible"){
+            toastr.success("Se le ha acabado el tiempo de navegacion. Gracias por utilizar el servicio y esperamos que vuelva pronto.", "Información");
+        }else{
+            if("Notification" in window){
+                if(Notification.permission === "granted"){
+
+                    var options = {
+                        body: 'Se le ha acabado el tiempo de navegacion. Gracias por utilizar el servicio y esperamos que vuelva pronto.'
+                        // icon: getAbsolutePath()+"favicon.png" el icono no funciona, si lo pongo no lanza la notificacion
+                    };
+                    var systemNotification = new Notification("Wifi portal", options);
+                    // var systemNotification = new Notification("Titulo","Se le ha acabado el tiempo de navegacion. Gracias por utilizar el servicio y esperamos que vuelva pronto.");
+                }
+            }
+        }
     }else{
         seconds--;
 
