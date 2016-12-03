@@ -163,13 +163,14 @@ function checkIfIsAuthenticated() {
         success: function (json) {
             if (json.success) {
                 localStorage.setItem("CAPTIVE_PORTAL_SESSION_ID", json.data.sessionId);
+                // Displaying the complete object for the session.
+                console.log(json);
                 $("#loading").hide();
                 $("#autenticated").show();
-                $("#activation_time").val(json.data.activationTime);
+                // $("#activation_time").val(json.data.activationTime);
                 // $("#time_credit").val(json.data.timeCredit+ ":00");
+                // $("#expiry_time").val(json.data.expiryTime);
                 $("#time_credit").text(json.data.timeCredit);
-                console.log("json.data.timeCredit = " + json.data.timeCredit);
-                $("#expiry_time").val(json.data.expiryTime);
                 timerId = window.setInterval(downTimer, 1000);
                 window.onbeforeunload = confirmCloseWindow;
             } else {
