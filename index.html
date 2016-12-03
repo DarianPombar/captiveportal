@@ -22,186 +22,171 @@
 
 <body>
 
-<!-- Start Project Here -->
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-xs-12 col-lg-6 gradient flexbox">
-            <img src="img/rocket.svg" alt="Rocket" id="rocket">
-        </div>
+    <!-- Start Project Here -->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 col-lg-6 gradient flexbox">
+                <img src="img/rocket.svg" alt="Rocket" id="rocket">
+            </div>
 
-        <div id="loading" class="col-xs-12 col-lg-6 flexbox">
-            <img src="img/loading.gif" alt="Loading ...">
-        </div>
+            <div id="loading" class="col-xs-12 col-lg-6 body flexbox" style="display: none;">
+                <div class="loader"></div>
+            </div>
 
-        <!-- Conexion Available -->
-        <div id="connected" class="col-xs-12 col-lg-6 flexbox" style="display: none;">
-            <div class="card card-block m-y-2 text-xs-center">
-                <div class="m-a-1">
-                    <img src="img/astronaut.svg" alt="Astronaut" id="astronaut" class="m-x-auto">
-                    <h5 class="text-uppercase m-y-1">houston tenemos conexion</h5>
-                    <h1 class="m-y-1">Recibiendo Wifi!</h1>
-                    <p class="card-text">Bienvenido a nuestra red! Para navegar el internet introduzca un ID valido.
-                        <br> Puede adquirir un ID con el administrador.</p>
-                    <div class="col-xs-offset-1 col-xs-10">
-                        <input id="auth_voucher" name="auth_voucher" class="form-control text-xs-center"
-                               placeholder="Introduzca su tiket" type="text">
+            <!-- Conexion Available -->
+            <div id="connected" class="col-xs-12 col-lg-6 body flexbox">
+                <div class="card card-block m-y-2 text-xs-center">
+                    <div class="m-a-1">
+                        <img src="img/astronaut.svg" alt="Astronaut" id="astronaut" class="m-x-auto">
+                        <h5 class="text-uppercase m-y-1">houston tenemos conexion</h5>
+                        <h1 class="m-y-1">Recibiendo Wifi!</h1>
+                        <p class="card-text">Bienvenido a nuestra red! Para navegar el internet introduzca un ID valido.
+                            <br> Puede adquirir un ID con el administrador.</p>
+                        <div class="col-xs-offset-1 col-xs-10">
+                            <input id="auth_voucher" name="auth_voucher" class="form-control text-xs-center" placeholder="Introduzca su voucher" type="text">
+                        </div>
+                        <button id="btnActivate" class="btn btn-success waves-effect">Activar Internet</button>
+                        <button id="btnCheckVoucher" class="btn btn-success waves-effect">Revizar Voucher</button>
+                        <!--<button type="button" class="btn btn-default-outline" data-toggle="modal"-->
+                        <!--data-target="#generateVouchersModal">-->
+                        <!--Generar Vouchers-->
+                        <!--</button>-->
                     </div>
-                    <button id="btnActivate" class="btn btn-default-outline waves-effect">Activar Internet</button>
-                    <button id="btnCheckVoucher" class="btn btn-default-outline waves-effect">Chequear Tiempo disponible</button>
-                    <!--<button type="button" class="btn btn-default-outline" data-toggle="modal"-->
-                    <!--data-target="#generateVouchersModal">-->
-                    <!--Generar Vouchers-->
-                    <!--</button>-->
                 </div>
             </div>
-        </div>
-        <!--/ Conexion Available -->
+            <!--/ Conexion Available -->
 
-        <!-- Activate Internet -->
-        <div id="activateInternet" class="col-xs-12 col-lg-6 flexbox" style="display: none;">
-            <div class="card card-block m-y-2 text-xs-center">
-                <div class="m-a-1">
-                    <a href="https://www.truststore.io" target="_blank"><h4><span class="red white-text p-a-1"> <span
-                            id="identification">Id</span><span>ASIMETRICO</span></span></h4></a>
-                    <h5 class="text-uppercase m-y-2">emitido por <a href="https://truststore.io" target="_blank">truststore</a>
-                        <br>
-                        <small>the best wifi security provider</small>
-                    </h5>
-
-                    <p class="card-text">Si ya tiene un ID escribalo debajo y presione el boton: <span
-                            class="green-text">"Verificar ID"</span></p>
-
-                    <div class="form-group row">
-                        <label for="auth_voucher" class="sr-only">Numero de Identificacion</label>
-                        <div class="col-xs-offset-1 col-xs-10">
-                            <input id="auth_voucher" name="auth_voucher" class="form-control text-xs-center"
-                                   placeholder="Introduzca su ID" type="text">
+            <!-- Autenticated -->
+            <div id="autenticated" class="col-xs-12 col-lg-6 body flexbox">
+                <div class="card card-block m-y-2 text-xs-center">
+                    <!--<div class="m-a-1">
+                        <h1>Autentificado</h1>
+                        <br/>
+                        <label>Tiempo en que se logeo: </label><input id="activation_time" type="text" />
+                        <label>Tiempo disponible: </label><input id="time_credit" type="text" />
+                        <label>Tiempo en que expira: </label><input id="expiry_time" type="text" />
+                        <br/>
+                        <button id="btnDisconnect" class="btn btn-danger waves-effect">Desconectar</button>
+                    </div>-->
+                    <div class="m-a-1">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <h5 class="text-xs-center text-uppercase">Ya es tiempo de navegar</h5>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="m-y-2">
+                                <p>Puede desconectar la sesion y regrezar luego a navegar con el tiempo restante.</p>
+                            </div>
+                        </div>
+                        <div class="row m-y-2">
+                            <div class="col-xs-6 flexbox">
+                                <img id="clock" src="img/clock.svg" alt="Clock">
+                            </div>
+                            <div class="col-xs-6 text-xs-left">
+                                <h1><span id="time_credit"></span> minutos</h1>
+                            </div>
+                        </div>
+                        <div class="row m-y-2">
+                            <div class="col-xs-12">
+                                <button id="btnDisconnect" class="btn btn-danger waves-effect">Desconectar</button>
+                            </div>
                         </div>
                     </div>
-                    <button id="btnBack" class="btn btn-info-outline waves-effect">Atras</button>
-                    <button id="btnAuthenticate" class="btn btn-default-outline waves-effect">Verificar ID</button>
                 </div>
             </div>
+            <!-- Autenticated -->
         </div>
-        <!--/ Activate Internet -->
-
-        <!-- Autenticated -->
-        <div id="autenticated" class="col-xs-12 col-lg-6 flexbox" style="display: none">
-            <div class="card card-block m-y-2 text-xs-center">
-                <div class="m-a-1">
-                    <h1>Autentificado</h1>
-                    <br/>
-                    <label>Tiempo en que se logeo: </label><input id="activation_time" type="text"/>
-                    <label>Tiempo disponible: </label><input id="time_credit" type="text"/>
-                    <label>Tiempo en que expira: </label><input id="expiry_time" type="text"/>
-                    <br/>
-                    <input id="btnDisconnect" type="button" class="btn btn-success-outline waves-effect"
-                           value="Desconectar"/>
-                </div>
-            </div>
-        </div>
-        <!-- Autenticated -->
     </div>
-</div>
 
-<!--/ Start Project Here -->
+    <!--/ Start Project Here -->
 
-<!-- Modal -->
-<div class="modal fade" id="generateVouchersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <!-- Modal -->
+    <div class="modal fade" id="generateVouchersModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="material-icons">X</i>
                 </button>
-                <h1 class="modal-title text-xs-center teal-text" id="myModalLabel">Generar nuevos vouchers</h1>
-            </div>
-            <div class="modal-body ">
-                <h5 class="modal-title text-xs-center">Antes de generar nuevos vouchers tiene que autentificarse</h5>
-                <form id="formGenerateVouchers" class="form-horizontal">
-                    <div id="generateVoucherAuthentication">
-                        <div class="form-group">
-                            <label for="txtUser" class="control-label col-sm-2">Usuario:</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="txtUser" class="form-control validate[required]"
-                                       placeholder="Usuario">
+                    <h1 class="modal-title text-xs-center teal-text" id="myModalLabel">Generar nuevos vouchers</h1>
+                </div>
+                <div class="modal-body ">
+                    <h5 class="modal-title text-xs-center">Antes de generar nuevos vouchers tiene que autentificarse</h5>
+                    <form id="formGenerateVouchers" class="form-horizontal">
+                        <div id="generateVoucherAuthentication">
+                            <div class="form-group">
+                                <label for="txtUser" class="control-label col-sm-2">Usuario:</label>
+                                <div class="col-sm-10">
+                                    <input type="text" id="txtUser" class="form-control validate[required]" placeholder="Usuario">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtPassword" class="control-label col-sm-2">Contrasena:</label>
+                                <div class="col-sm-10">
+                                    <input type="password" id="txtPassword" class="form-control validate[required]" placeholder="Contrasena">
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="txtPassword" class="control-label col-sm-2">Contrasena:</label>
-                            <div class="col-sm-10">
-                                <input type="password" id="txtPassword" class="form-control validate[required]"
-                                       placeholder="Contrasena">
+                        <div id="generateVoucherAuthenticated">
+                            <div class="form-group">
+                                <label for="roll" class="form-control-label col-sm-2">Roll #</label>
+                                <div class="col-sm-10">
+                                    <input type="text" id="roll" class="form-control validate[required,custom[integer],min[0],max[65535]]" placeholder="Roll">
+                                    <!--<p class="small">Enter the Roll# (0..65535) found on top of the generated/printed vouchers</p>-->
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="minutes" class="form-control-label col-sm-2">Minutes per ticket</label>
+                                <div class="col-sm-10">
+                                    <input type="text" id="minutes" class="form-control validate[required,custom[integer],min[1]]" placeholder="Minutes">
+                                    <!--<p class="small">Defines the time in minutes that a user is allowed access. The clock starts ticking the first time a voucher is used for authentication.</p>-->
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="count" class="form-control-label col-sm-2">Count</label>
+                                <div class="col-sm-10">
+                                    <input type="text" id="count" class="form-control validate[required,custom[integer],min[1],max[1023]]" placeholder="Count">
+                                    <!--<p class="small">Enter the number of vouchers (1..1023) found on top of the generated/printed vouchers. WARNING: Changing this number for an existing Roll will mark all vouchers as unused again</p>-->
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="desc" class="form-control-label col-sm-2">Comment</label>
+                                <div class="col-sm-10">
+                                    <input type="text" id="desc" class="form-control validate[required]" placeholder="Descripcion">
+                                    <!--<p class="small">Can be used to further identify this roll. Ignored by the system.</p>-->
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div id="generateVoucherAuthenticated">
-                        <div class="form-group">
-                            <label for="roll" class="form-control-label col-sm-2">Roll #</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="roll"
-                                       class="form-control validate[required,custom[integer],min[0],max[65535]]"
-                                       placeholder="Roll">
-                                <!--<p class="small">Enter the Roll# (0..65535) found on top of the generated/printed vouchers</p>-->
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="minutes" class="form-control-label col-sm-2">Minutes per ticket</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="minutes"
-                                       class="form-control validate[required,custom[integer],min[1]]"
-                                       placeholder="Minutes">
-                                <!--<p class="small">Defines the time in minutes that a user is allowed access. The clock starts ticking the first time a voucher is used for authentication.</p>-->
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="count" class="form-control-label col-sm-2">Count</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="count"
-                                       class="form-control validate[required,custom[integer],min[1],max[1023]]"
-                                       placeholder="Count">
-                                <!--<p class="small">Enter the number of vouchers (1..1023) found on top of the generated/printed vouchers. WARNING: Changing this number for an existing Roll will mark all vouchers as unused again</p>-->
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="desc" class="form-control-label col-sm-2">Comment</label>
-                            <div class="col-sm-10">
-                                <input type="text" id="desc" class="form-control validate[required]"
-                                       placeholder="Descripcion">
-                                <!--<p class="small">Can be used to further identify this roll. Ignored by the system.</p>-->
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group text-xs-right">
-                        <button type="submit" id="btnGenerateNewVouchersAuthenticated" class="btn btn-primary">
+                        <div class="form-group text-xs-right">
+                            <button type="submit" id="btnGenerateNewVouchersAuthenticated" class="btn btn-primary">
                             Autentificar
                         </button>
-                        <button type="submit" id="btnGenerateNewVouchers" class="btn btn-primary">Generar</button>
-                        <button class="btn btn-default btn-small" data-dismiss="modal">Cerrar</button>
-                    </div>
-                </form>
+                            <button type="submit" id="btnGenerateNewVouchers" class="btn btn-primary">Generar</button>
+                            <button class="btn btn-default btn-small" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!--/ Modal -->
+    <!--/ Modal -->
 
-<!-- SCRIPTS -->
-<!-- JQuery -->
-<script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
-<!-- Bootstrap tooltips -->
-<script type="text/javascript" src="js/tether.min.js"></script>
-<!-- Bootstrap core JavaScript -->
-<script type="text/javascript" src="js/bootstrap.min.js"></script>
-<!-- MDB core JavaScript -->
-<script type="text/javascript" src="js/mdb.min.js"></script>
-<!-- JQuery Validation Enginery -->
-<script type="text/javascript" src="js/jquery.validationEngine.js"></script>
-<script type="text/javascript" src="js/jquery.validationEngine-es.js"></script>
-<!-- Personal Scripts -->
-<script type="text/javascript" src="js/scripts.js"></script>
-<!--/ SCRIPTS -->
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="js/tether.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+    <!-- JQuery Validation Enginery -->
+    <script type="text/javascript" src="js/jquery.validationEngine.js"></script>
+    <script type="text/javascript" src="js/jquery.validationEngine-es.js"></script>
+    <!-- Personal Scripts -->
+    <script type="text/javascript" src="js/scripts.js"></script>
+    <!--/ SCRIPTS -->
 
 
 </body>

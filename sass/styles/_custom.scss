@@ -44,16 +44,17 @@ body {
     width: auto;
 }
 
-#identification {
-    border: 2px solid white;
-    border-radius: 0.5rem;
-    padding: 0.2rem 0.5rem;
-    margin-right: 0.8rem;
+#clock {
+    height: 3rem;
+    width: auto;
 }
 
 @media screen and (max-width: 991px) {
     .gradient {
         height: 30vh;
+    }
+    .body {
+        min-height: 70vh;
     }
 }
 
@@ -70,35 +71,27 @@ body {
     }
 }
 
-.material-icons {}
-
 .gradient {
     background: linear-gradient(#34a8c1, #34ae8b);
 }
 
-.error-gradient {
-    height: 100%;
-    width: 100%;
-    background: linear-gradient(#34a8c1, #34ae8b);
+// HTML5 loader.
+.loader {
+    border: 0.5rem solid #F3F3F3;
+    /* Light grey */
+    border-top: 0.5rem solid #34ae8b;
+    /* Blue */
+    border-radius: 50%;
+    width: 4rem;
+    height: 4rem;
+    animation: spin 2s linear infinite;
 }
 
-.btn {
-    padding: 0.8rem 1rem;
-    border-radius: 0.5rem;
-    box-shadow: unset;
-}
-
-.btn:hover {
-    box-shadow: unset;
-    color: darken(#34ae8b, 25%);
-}
-
-.btn-default-outline {
-    color: #34ae8b;
-    border: 2px solid #34ae8b;
-}
-
-.btn-success-outline {
-    padding: 0.2rem;
-    margin: 0.5rem;
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }

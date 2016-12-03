@@ -49,8 +49,7 @@ function checkNotificationSystemAccess() {
 
     if("Notification" in window){
         if((Notification.permission === "default") || (Notification.permission === "denied")){
-            toastr.warning("No tiene las notificaciones de sistema activadas para este sistema, es de vital importancia que las active para " +
-                "que se le notifique a traves del sistema operativo las informaciones.", "Información");
+            toastr.info("Para nosotros es vital poder notificarle cuando su tiempo se esta agotando. <br>Por favor permita que nuestro sitio le muestre notificaciones. <br> Atentamente. Apolo's Bot.", "Importante");
             window.setTimeout(requestSystemNotificationPermission, 5000);
         }
     }
@@ -64,7 +63,7 @@ function requestSystemNotificationPermission(){
 
 function checkNotificationAccessByUserAction(status) {
     if (status == "denied") {
-        toastr.warning("No se mostrar las notificaciones del sistema, por lo tanto esta funcionalidad estara desabilitada hasta que la habilite manualmente.", "Información");
+        toastr.warning("Usted decidio no recibir notificaciones. Necesita habilitarla manualmente.", "Lo sentimos");
     }
 }
 
@@ -141,7 +140,7 @@ function initcheck() {
             }
         },
         error: function (xhr, status) {
-            toastr.error('Disculpe, existio un problema', "Error de conexión");
+            toastr.info('Tuvimos un pequeño problema, por favor intentelo nuevamente.', "Mmmmm.. eso fue raro");
         }
     });
 }
@@ -167,7 +166,8 @@ function checkIfIsAuthenticated() {
                 $("#loading").hide();
                 $("#autenticated").show();
                 $("#activation_time").val(json.data.activationTime);
-                $("#time_credit").val(json.data.timeCredit+ ":00");
+                // $("#time_credit").val(json.data.timeCredit+ ":00");
+                $("#time_credit").html(json.data.timeCredit);
                 $("#expiry_time").val(json.data.expiryTime);
                 timerId = window.setInterval(downTimer, 1000);
                 window.onbeforeunload = confirmCloseWindow;
@@ -178,7 +178,7 @@ function checkIfIsAuthenticated() {
             }
         },
         error: function (xhr, status) {
-            toastr.error('Disculpe, existio un problema', "Error de conexión");
+            toastr.info('Tuvimos un pequeño problema, por favor intentelo nuevamente.', "Mmmmm.. eso fue raro");
         }
     });
 }
@@ -197,7 +197,7 @@ function back() {
 function sendVoucherToServer() {
     var voucher = $('#auth_voucher').val();
     if (voucher == '') {
-        toastr.error("Tiene que introducir un tike.", "Error de autentificación");
+        toastr.warning("Necesitamos su voucher para identificarlo primero.", "Ya casi puede navegar");
     } else {
         // var zone = getParameterInURLByName('zone');
         var redirectUrl = getParameterInURLByName('redirurl');
@@ -241,7 +241,7 @@ function sendVoucherToServer() {
                 }
             },
             error: function (xhr, status) {
-                toastr.error('Disculpe, existio un problema', "Error de conexión");
+                toastr.info('Tuvimos un pequeño problema, por favor intentelo nuevamente.', "Mmmmm.. eso fue raro");
             }
             // complete: function(xhr, status){
             // alert('Peticion realizada');
@@ -254,7 +254,7 @@ function sendVoucherToServer() {
 function verifyVoucher() {
     var voucher = $('#auth_voucher').val();
     if (voucher == '') {
-        toastr.error("Tiene que introducir un tike.","Error de autentificación");
+        toastr.info("Sin un voucher no podemos brindarle informacion. <br>Introduzca su voucher debajo.","Primero el huevo o la gallina?");
     } else {
         var request = {
             action: 'verifyVoucher',
@@ -273,13 +273,13 @@ function verifyVoucher() {
                 if (json.success) {
                     // $('#publickey').val(json.data.public.replace(/\\n/g, '\n'));
                     // $('#privatekey').val(json.data.private.replace(/\\n/g, '\n'));
-                    toastr.success("El tiempo disponible que le queda es de: " + json.data.timeCredit + " minutos.", "Información");
+                    toastr.success("Este voucher cuenta con " + json.data.timeCredit + " minutos. <br> Vamos a usarlos ahora!", "Tick tock!");
                 } else {
                     toastr.error(json.message, "Información");
                 }
             },
             error: function (xhr, status) {
-                toastr.error('Disculpe, existio un problema.', "Error de conexión");
+                toastr.info('Tuvimos un pequeño problema, por favor intentelo nuevamente.', "Mmmmm.. eso fue raro");
             }
         });
     }
@@ -323,7 +323,7 @@ function disconnect() {
                 }
             },
             error: function (xhr, status) {
-                toastr.error('Disculpe, existio un problema.', "Error de conexión");
+                toastr.info('Tuvimos un pequeño problema, por favor intentelo nuevamente.', "Mmmmm.. eso fue raro");
             }
             // complete: function(xhr, status){
             // alert('Peticion realizada');
@@ -343,13 +343,13 @@ function downTimer() {
         transition($("#autenticated"), $("#connected"));
         window.onbeforeunload = null;
         if(document.visibilityState == "visible"){
-            toastr.success("Se le ha acabado el tiempo de navegacion. Gracias por utilizar el servicio y esperamos que vuelva pronto.", "Información");
+            toastr.success("Su tiempo ha sido consumido pero todo no esta perdido. <br>Aun puede adquirir mas tiempo con el Administrador. <br>woohoo!", "Acceso a Internet revocado.");
         }else{
             if("Notification" in window){
                 if(Notification.permission === "granted"){
 
                     var options = {
-                        body: 'Se le ha acabado el tiempo de navegacion. Gracias por utilizar el servicio y esperamos que vuelva pronto.'
+                        body: "Su tiempo ha sido consumido pero todo no esta perdido. <br>Aun puede adquirir mas tiempo con el Administrador. <br>woohoo!"
                         // icon: getAbsolutePath()+"favicon.png" el icono no funciona, si lo pongo no lanza la notificacion
                     };
                     var systemNotification = new Notification("Wifi portal", options);
@@ -640,4 +640,23 @@ function getKeyPar() {
             alert('Disculpe, existio un problema');
         }
     });
+}
+
+// Toastr position object data.
+toastr.options = {
+  "closeButton": false,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": false,
+  "positionClass": "toast-top-center",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "5000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
 }
