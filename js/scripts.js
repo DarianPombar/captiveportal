@@ -199,7 +199,7 @@ function back() {
 function sendVoucherToServer() {
     var voucher = $('#auth_voucher').val();
     if (voucher == '') {
-        toastr.warning("Necesitamos su voucher para identificarlo primero.", "Ya casi puede navegar");
+        toastr.warning("Necesitamos su voucher para identificarle primero.", "Ya casi puede navegar");
     } else {
         // var zone = getParameterInURLByName('zone');
         var redirectUrl = getParameterInURLByName('redirurl');
