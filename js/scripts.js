@@ -231,7 +231,7 @@ function sendVoucherToServer() {
 
                     $("#auth_voucher").val("");
                     $("#activation_time").val(json.data.activationTime);
-                    $("#time_credit").val(json.data.timeCredit + ":00");
+                    $("#time_credit").text(json.data.timeCredit);
                     $("#expiry_time").val(json.data.expiryTime);
                     timerId = window.setInterval(downTimer, 1000);
                     window.onbeforeunload = confirmCloseWindow;
@@ -335,7 +335,7 @@ function disconnect() {
 }
 
 function downTimer() {
-    var timeCredit = $("#time_credit").val().split(":");
+    var timeCredit = $("#time_credit").html();
 
     var seconds = parseInt(timeCredit[1]);
     var minutes = parseInt(timeCredit[0]);
@@ -368,9 +368,9 @@ function downTimer() {
         }
 
         if (seconds > 9) {
-            $("#time_credit").val(minutes + ":" + seconds);
+            $("#time_credit").text(minutes);
         } else {
-            $("#time_credit").val(minutes + ":0" + seconds);
+            $("#time_credit").text(minutes);
         }
     }
 
