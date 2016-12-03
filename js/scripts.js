@@ -167,7 +167,8 @@ function checkIfIsAuthenticated() {
                 $("#autenticated").show();
                 $("#activation_time").val(json.data.activationTime);
                 // $("#time_credit").val(json.data.timeCredit+ ":00");
-                $("#time_credit").html(json.data.timeCredit);
+                $("#time_credit").text = json.data.timeCredit;
+                console.log("This is the value: " + json.data.timeCredit);
                 $("#expiry_time").val(json.data.expiryTime);
                 timerId = window.setInterval(downTimer, 1000);
                 window.onbeforeunload = confirmCloseWindow;
@@ -349,7 +350,7 @@ function downTimer() {
                 if(Notification.permission === "granted"){
 
                     var options = {
-                        body: "Su tiempo ha sido consumido pero todo no esta perdido. <br>Aun puede adquirir mas tiempo con el Administrador. <br>woohoo!"
+                        body: "Su tiempo ha sido consumido pero todo no esta perdido. Aun puede adquirir mas tiempo con el Administrador. Woohoo!"
                         // icon: getAbsolutePath()+"favicon.png" el icono no funciona, si lo pongo no lanza la notificacion
                     };
                     var systemNotification = new Notification("Wifi portal", options);

@@ -99,11 +99,11 @@ function checkVoucherForTraffic($data){
             } else if($sessionid == 0){
                 captiveportal_logportalauth($voucher, $clientmac, $clientip, "FAILURE", "voucher expired");
                 $response['success'] = false;
-                $response['message'] = "Tiket expirado.";
+                $response['message'] = "Este voucher ya ha sido usado.";
             } else if($sessionid == -1){
                 $response['success'] = false;
 //                $response['message'] = "Username: {$username} is already authenticated using another MAC address.";
-                $response['message'] = "El tiket ".$voucher." esta siendo usado desde otra computadora";
+                $response['message'] = "Cada voucher puede ser usado por un solo cliente. El voucher ".$voucher." ya esta siendo usado.";
             } else if($sessionid == -2){
                 $response['success'] = false;
 //                $response['message'] = "System reached maximum login capacity";
@@ -112,11 +112,11 @@ function checkVoucherForTraffic($data){
         } else if ($timecredit == -1) {
             captiveportal_logportalauth($voucher, $clientmac, $clientip, "FAILURE", "voucher expired");
             $response['success'] = false;
-            $response['message'] = "Tiket expirado.";
+            $response['message'] = "Este voucher ya ha sido usado. Adquiera una nuevo con el Administrador de la red.";
         } else {
             captiveportal_logportalauth($voucher, $clientmac, $clientip, "FAILURE");
             $response['success'] = false;
-            $response['message'] = "Tiket invalido.";
+            $response['message'] = "Voucher no valido en este sistema.";
             $response['voucher'] = $voucher;
         }
     }else{

@@ -27,14 +27,14 @@ function verifyVoucher($data)
 
         if (strpos($result[0], "already used and expired") !== false) {
             $response['success'] = false;
-            $response['message'] = "Tiket expirado";
+            $response['message'] = "Este voucher ya ha sido utilizado.";
         } else if (strpos($result[0], "invalid:") !== false) {
             $response['success'] = false;
-            $response['message'] = "Tiket invalido";
+            $response['message'] = "Este voucher no es valido.";
         } else if (strpos($result[0], "active and good for") !== false) {
             $timeCredit = (int)explode(" ", $result[1])[3];
             $response['success'] = true;
-            $response['message'] = "Tiket valido, activo y con tiempo disponible";
+            $response['message'] = "Su voucher es valido, actualmente en uso y con tiempo disponible";
             $data = [];
             $data['timeCredit'] = $timeCredit;
             $data['inUse'] = true;
@@ -42,7 +42,7 @@ function verifyVoucher($data)
         } else if (strpos($result[0], "good for") !== false) {
             $timeCredit = (int)explode(" ", $result[1])[3];
             $response['success'] = true;
-            $response['message'] = "Tiket valido, no activo y con tiempo disponible";
+            $response['message'] = "Voucher valido, no activo y con tiempo disponible";
             $data = [];
             $data['timeCredit'] = $timeCredit;
             $data['inUse'] = false;
