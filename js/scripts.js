@@ -167,8 +167,8 @@ function checkIfIsAuthenticated() {
                 $("#autenticated").show();
                 $("#activation_time").val(json.data.activationTime);
                 // $("#time_credit").val(json.data.timeCredit+ ":00");
-                $("#time_credit").text = json.data.timeCredit;
-                console.log("This is the value: " + json.data.timeCredit);
+                $("#time_credit").text(json.data.timeCredit);
+                console.log("json.data.timeCredit = " + json.data.timeCredit);
                 $("#expiry_time").val(json.data.expiryTime);
                 timerId = window.setInterval(downTimer, 1000);
                 window.onbeforeunload = confirmCloseWindow;
