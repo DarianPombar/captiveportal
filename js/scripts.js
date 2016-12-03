@@ -335,7 +335,7 @@ function disconnect() {
 }
 
 function downTimer() {
-    var timeCredit = $("#time_credit").html().parseInt();
+    var timeCredit = $("#time_credit").html().split(":");
 
     var seconds = parseInt(timeCredit[1]);
     var minutes = parseInt(timeCredit[0]);
