@@ -170,7 +170,7 @@ function checkIfIsAuthenticated() {
                 // $("#activation_time").val(json.data.activationTime);
                 // $("#time_credit").val(json.data.timeCredit+ ":00");
                 // $("#expiry_time").val(json.data.expiryTime);
-                $("#time_credit").text(json.data.timeCredit);
+                $("#time_credit").text(json.data.timeCredit + ":00");
                 timerId = window.setInterval(downTimer, 1000);
                 window.onbeforeunload = confirmCloseWindow;
             } else {
@@ -231,7 +231,7 @@ function sendVoucherToServer() {
 
                     $("#auth_voucher").val("");
                     $("#activation_time").val(json.data.activationTime);
-                    $("#time_credit").text(json.data.timeCredit);
+                    $("#time_credit").text(json.data.timeCredit + ":00");
                     $("#expiry_time").val(json.data.expiryTime);
                     timerId = window.setInterval(downTimer, 1000);
                     window.onbeforeunload = confirmCloseWindow;
@@ -368,9 +368,9 @@ function downTimer() {
         }
 
         if (seconds > 9) {
-            $("#time_credit").text(minutes);
+            $("#time_credit").text(minutes + ":" + seconds);
         } else {
-            $("#time_credit").text(minutes);
+            $("#time_credit").text(minutes + ":0" + seconds);
         }
     }
 
