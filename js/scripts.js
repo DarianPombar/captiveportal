@@ -198,6 +198,7 @@ function back() {
  */
 function sendVoucherToServer() {
     var voucher = $('#auth_voucher').val();
+    $('#btnActivate').attr('disabled');
     if (voucher == '') {
         toastr.warning("Necesitamos su voucher para identificarle primero.", "Ya casi puede navegar");
     } else {
@@ -229,6 +230,17 @@ function sendVoucherToServer() {
                     // localStorage.setItem("CAPTIVE_PORTAL_ZONE", json.data.zone);
                     localStorage.setItem("CAPTIVE_PORTAL_SESSION_ID", json.data.sessionId);
 
+                    // To-Do: Calculate the offset time between the system clock and the server time.
+                    // var acurrateTime = funcion() {
+                    //     let systemTime = new Date().now();
+                    //     let serverTime = json.data.expiryTime;
+                    //     let offset = function() {
+                    //         return systemTime - serverTime;
+                    //     };
+
+                    //     console.log(offset);
+                    // };
+
                     $("#auth_voucher").val("");
                     $("#activation_time").val(json.data.activationTime);
                     $("#time_credit").text(json.data.timeCredit + ":00");
@@ -249,14 +261,16 @@ function sendVoucherToServer() {
             // alert('Peticion realizada');
             // }
         });
+        $('#btnActivate').removeAttr('disabled');        
     }
 }
 
 
 function verifyVoucher() {
     var voucher = $('#auth_voucher').val();
+    $('#btnCheckVoucher').attr('disabled');
     if (voucher == '') {
-        toastr.info("Sin un voucher no podemos brindarle informacion. <br>Introduzca su voucher debajo.","Primero el huevo o la gallina?");
+        toastr.info("Introduzca su voucher","Antes de verificar");
     } else {
         var request = {
             action: 'verifyVoucher',
@@ -277,13 +291,14 @@ function verifyVoucher() {
                     // $('#privatekey').val(json.data.private.replace(/\\n/g, '\n'));
                     toastr.success("Este voucher cuenta con " + json.data.timeCredit + " minutos. <br> Vamos a usarlos ahora!", "Tick tock!");
                 } else {
-                    toastr.error(json.message, "Información");
+                    toastr.error(json.message);
                 }
             },
             error: function (xhr, status) {
                 toastr.info('Tuvimos un pequeño problema, por favor intentelo nuevamente.', "Mmmmm.. eso fue raro");
             }
         });
+        $('#btnCheckVoucher').removeAttr('disabled');
     }
 }
 
@@ -345,16 +360,16 @@ function downTimer() {
         transition($("#autenticated"), $("#connected"));
         window.onbeforeunload = null;
         if(document.visibilityState == "visible"){
-            toastr.success("Su tiempo ha sido consumido pero todo no esta perdido. <br>Aun puede adquirir mas tiempo con el Administrador. <br>woohoo!", "Acceso a Internet revocado.");
+            toastr.success("Puede adquirir mas tiempo con el administrador", "Internet consumido");
         }else{
             if("Notification" in window){
                 if(Notification.permission === "granted"){
 
                     var options = {
-                        body: "Su tiempo ha sido consumido pero todo no esta perdido. Aun puede adquirir mas tiempo con el Administrador. Woohoo!"
+                        body: "Puede adquirir mas tiempo con el administrador"
                         // icon: getAbsolutePath()+"favicon.png" el icono no funciona, si lo pongo no lanza la notificacion
                     };
-                    var systemNotification = new Notification("Wifi portal", options);
+                    var systemNotification = new Notification("Internet consumido", options);
                     // var systemNotification = new Notification("Titulo","Se le ha acabado el tiempo de navegacion. Gracias por utilizar el servicio y esperamos que vuelva pronto.");
                 }
             }
@@ -371,6 +386,14 @@ function downTimer() {
             $("#time_credit").text(minutes + ":" + seconds);
         } else {
             $("#time_credit").text(minutes + ":0" + seconds);
+        }
+        // Time description
+        if (minutes > 1) {
+            $("#time_class").text("minutos");
+        } else if (minutes == 1) {
+            $("#time_class").text("minuto");
+        } else {
+            $("#time_class").text("segundos");
         }
     }
 

@@ -88,7 +88,7 @@ function checkVoucherForTraffic($data){
                 // $responseData['zone'] = $cpzone;
                 $responsedata['timeCredit'] = $timecredit;
                 $responsedata['activationTime'] = date("H:i - Y/m/d");
-                $responsedata['expiryTime'] = date('H:i - Y/m/d', strtotime('+' . strval($timecredit) . ' minutes'));
+                $responsedata['expiryTime'] = time();
                 $responsedata['clientIp'] = $clientip;
                 $responsedata['clientMac'] = $clientmac;
                 $responsedata['redirUrl'] = $redirurl;
@@ -143,10 +143,10 @@ function disconnectClient($data){
     if($sessionId != "") {
         captiveportal_disconnect_client($sessionId);
         $response['success'] = true;
-        $response['message'] = "Se ha desconectado satisfactoriamente. Gracias por utilizar el servicio y esperamos que vuelva pronto.";
+        $response['message'] = "Gracias por usar nuestro servicio";
     }else{
         $response['success'] = false;
-        $response['message'] = "Problemas con el parametro sessionId.";
+        $response['message'] = "No hemos podido desconectarlo, intentelo de nuevo.";
     }
      
     return $response;
