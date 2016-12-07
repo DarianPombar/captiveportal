@@ -13,6 +13,8 @@
 
 /** Variables globales */
 var timerId = null;
+var timeCreditMinutes = null;
+var timeCreditSeconds = null;
 
 /** Llama a la funcion init cuando la pagina web este lista */
 $(document).ready(init);
@@ -164,13 +166,43 @@ function checkIfIsAuthenticated() {
             if (json.success) {
                 localStorage.setItem("CAPTIVE_PORTAL_SESSION_ID", json.data.sessionId);
                 // Displaying the complete object for the session.
-                console.log(json);
+                // console.log(json);
                 $("#loading").hide();
                 $("#autenticated").show();
                 // $("#activation_time").val(json.data.activationTime);
                 // $("#time_credit").val(json.data.timeCredit+ ":00");
                 // $("#expiry_time").val(json.data.expiryTime);
-                $("#time_credit").text(json.data.timeCredit + ":00");
+                let parcialTimeCredit = json.data.timeCredit;
+                // console.log("parcial time:"+parcialTimeCredit);
+                let totalTimeCredit = json.data.totalTimeCredit;
+                // console.log("parcial time:"+totalTimeCredit);
+                let loggedTime = parseInt(localStorage.getItem("CAPTIVE_PORTAL_LOGGED_TIME"));
+                // console.log(loggedTime);
+                let activateTime = parseInt(json.data.activationTime);
+                // console.log(activateTime);
+
+                let endTime = loggedTime+(parcialTimeCredit*60);
+
+                let auxTime = activateTime+(parcialTimeCredit*60);
+
+                let differenceTime = auxTime - endTime;
+                // console.log(differenceTime);
+
+                timeCreditMinutes = parcialTimeCredit;
+                console.log(timeCreditMinutes);
+                timeCreditSeconds = 60 - (differenceTime % 60);
+                console.log(timeCreditSeconds);
+
+                if(timeCreditMinutes > 1) {
+                    $("#time_credit").text(timeCreditMinutes);
+                    $("#time_class").text("minutos");
+                }else if(timeCreditMinutes == 1){
+                    $("#time_credit").text(timeCreditMinutes);
+                    $("#time_class").text("minuto");
+                }else{
+                    $("#time_credit").text(timeCreditSeconds);
+                    $("#time_class").text("segundos");
+                }
                 timerId = window.setInterval(downTimer, 1000);
                 window.onbeforeunload = confirmCloseWindow;
             } else {
@@ -207,7 +239,7 @@ function sendVoucherToServer() {
         var request = {
             action: 'checkVoucherForTraffic',
             data: {
-                voucher: voucher,
+                voucher: voucher
             }
         };
         $.ajax({
@@ -241,10 +273,13 @@ function sendVoucherToServer() {
                     //     console.log(offset);
                     // };
 
-                    $("#auth_voucher").val("");
-                    $("#activation_time").val(json.data.activationTime);
-                    $("#time_credit").text(json.data.timeCredit + ":00");
-                    $("#expiry_time").val(json.data.expiryTime);
+                    // $("#auth_voucher").val("");
+                    // $("#activation_time").val(json.data.activationTime);
+                    timeCreditMinutes = json.data.timeCredit;
+                    timeCreditSeconds = 0;
+                    $("#time_credit").text(timeCreditMinutes);
+                    localStorage.setItem("CAPTIVE_PORTAL_LOGGED_TIME", json.data.loggedTime);
+                    // $("#expiry_time").val(json.data.expiryTime);
                     timerId = window.setInterval(downTimer, 1000);
                     window.onbeforeunload = confirmCloseWindow;
                     if (json.data.redirUrl != null && json.data.redirUrl != '') {
@@ -305,7 +340,9 @@ function verifyVoucher() {
 /**
  * Desconecta del servidor mediante una peticion ajax y muestra la vista de bienvenido
  */
-function disconnect() {
+function disconnect(e, notify) {
+    notify || (notify = true);
+    console.log(notify);
     // var zone = localStorage.getItem("CAPTIVE_PORTAL_ZONE");
     var sessionId = localStorage.getItem("CAPTIVE_PORTAL_SESSION_ID");
     if (sessionId == '') {
@@ -332,11 +369,15 @@ function disconnect() {
                     window.clearInterval(timerId);
                     transition($("#autenticated"), $("#connected"));
                     window.onbeforeunload = null;
-                    toastr.success(json.message);
+                    if(notify) {
+                        toastr.success(json.message);
+                    }
                     // localStorage.removeItem("CAPTIVE_PORTAL_ZONE");
                     // localStorage.removeItem("CAPTIVE_PORTAL_SESSION_ID");
                 } else {
-                    toastr.error(json.message, "Error de desconexión");
+                    if(notify) {
+                        toastr.error(json.message, "Error de desconexión");
+                    }
                 }
             },
             error: function (xhr, status) {
@@ -350,15 +391,16 @@ function disconnect() {
 }
 
 function downTimer() {
-    var timeCredit = $("#time_credit").html().split(":");
+    // var timeCredit = $("#time_credit").html().split(":");
 
-    var seconds = parseInt(timeCredit[1]);
-    var minutes = parseInt(timeCredit[0]);
+    // var seconds = parseInt(timeCredit[1]);
+    // var minutes = parseInt(timeCredit[0]);
 
-    if ((minutes == 0) && (seconds == 0)) {
-        window.clearInterval(timerId);
-        transition($("#autenticated"), $("#connected"));
-        window.onbeforeunload = null;
+    if ((timeCreditMinutes == 0) && (timeCreditSeconds == 0)) {
+        // window.clearInterval(timerId);
+        // transition($("#autenticated"), $("#connected"));
+        // window.onbeforeunload = null;
+        disconnect(null, false);
         if(document.visibilityState == "visible"){
             toastr.success("Puede adquirir mas tiempo con el administrador", "Internet consumido");
         }else{
@@ -375,24 +417,30 @@ function downTimer() {
             }
         }
     }else{
-        seconds--;
 
-        if (seconds == -1) {
-            seconds = 59;
-            minutes--;
+
+
+        timeCreditSeconds--;
+
+        if (timeCreditSeconds == -1) {
+            timeCreditSeconds = 59;
+            timeCreditMinutes--;
         }
 
-        if (seconds > 9) {
-            $("#time_credit").text(minutes + ":" + seconds);
-        } else {
-            $("#time_credit").text(minutes + ":0" + seconds);
-        }
+        // if (timeCreditSeconds > 9) {
+        //     $("#time_credit").text(minutes + ":" + seconds);
+        // } else {
+        //     $("#time_credit").text(minutes + ":0" + seconds);
+        // }
         // Time description
-        if (minutes > 1) {
+        if (timeCreditMinutes > 1) {
+            $("#time_credit").text(timeCreditMinutes);
             $("#time_class").text("minutos");
-        } else if (minutes == 1) {
+        } else if (timeCreditMinutes == 1) {
+            $("#time_credit").text(timeCreditMinutes);
             $("#time_class").text("minuto");
         } else {
+            $("#time_credit").text(timeCreditSeconds);
             $("#time_class").text("segundos");
         }
     }

@@ -40,11 +40,12 @@ function checkIfIsLogged(){
             $timecredit = (int)explode(" ", $result[1])[3];
         }
         $responsedata['timeCredit'] = $timecredit;
-//        $totalTimeOfVoucher = $cpsession['session_timeout'] / 60;
+        $responsedata['totalTimeCredit'] = $cpsession['session_timeout'] / 60;
 //        $consumedVoucherTime = $totalTimeOfVoucher - $timecredit;
 //        $responsedata['activationTime'] = date("H:i - Y/m/d", strtotime('-' . strval($consumedVoucherTime) . ' minutes'));
-        $responsedata['activationTime'] = date("H:i - Y/m/d");
-        $responsedata['expiryTime'] = date('H:i - Y/m/d', strtotime('+' . strval($timecredit) . ' minutes'));
+//        $responsedata['activationTime'] = date("H:i - Y/m/d");
+        $responsedata['activationTime'] = time();
+//        $responsedata['expiryTime'] = date('H:i - Y/m/d', strtotime('+' . strval($timecredit) . ' minutes'));
         $responsedata['clientIp'] = $cpsession['ip'];
         $responsedata['clientMac'] = $cpsession['mac'];
         $responsedata['sessionId'] = $cpsession['sessionid'];
@@ -87,8 +88,9 @@ function checkVoucherForTraffic($data){
                 $responsedata = array();
                 // $responseData['zone'] = $cpzone;
                 $responsedata['timeCredit'] = $timecredit;
-                $responsedata['activationTime'] = date("H:i - Y/m/d");
-                $responsedata['expiryTime'] = time();
+//                $responsedata['loggedTime'] = date("H:i - Y/m/d");
+                $responsedata['loggedTime'] = time();
+//                $responsedata['expiryTime'] = time();
                 $responsedata['clientIp'] = $clientip;
                 $responsedata['clientMac'] = $clientmac;
                 $responsedata['redirUrl'] = $redirurl;
